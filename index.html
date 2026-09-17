@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>특별한 초대장</title>
+  <style>
+    :root {
+      --bg-color: #f3efe6;
+      --env-base: #c29979;
+      --env-dark: #ab7f5f;
+      --env-flap: #b68b6c;
+      --letter-bg: #ffffff;
+      --accent: #8b3a3a;
+      --btn-bg: #2d2d2d;
+      --btn-text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--bg-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    .hint-text {
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      color: #666;
+      letter-spacing: -0.3px;
+      animation: pulse 1.8s infinite;
+      transition: opacity 0.4s ease;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .envelope-container {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      cursor: pointer;
+      margin-top: 170px;
+    }
+
+    .envelope-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--env-dark);
+      border-radius: 8px;
+      z-index: 1;
+    }
+
+    /* 편지지 영역 */
+    .letter {
+      position: absolute;
+      left: 15px;
+      top: 10px;
+      width: 290px;
+      height: 430px; /* 버튼이 들어갈 공간을 고려해 약간 넉넉하게 지정 */
+      background: var(--letter-bg);
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(0);
+      transition: transform 0.7s cubic-bezier(0.33, 1, 0.68, 1), 
+                  opacity 0.3s ease, 
+                  z-index 0s 0.3s;
+      pointer-events: none; /* 닫혀 있을 때는 클릭 방지 */
+    }
+
+    /* 캔바 이미지 */
+    .letter-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 버튼들을 감싸는 영역 (편지지 하단 오버레이) */
+    .letter-btn-wrap {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    /* 개별 버튼 스타일 */
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .action-btn:hover {
+      background-color: #444;
+    }
+
+    .action-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* 서브 버튼(예: 다운로드) 색상 구분 */
+    .action-btn.secondary {
+      background-color: var(--accent);
+    }
+
+    .envelope-pocket {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 160px solid var(--env-base);
+      border-right: 160px solid var(--env-base);
+      border-bottom: 110px solid var(--env-base);
+      border-top: 110px solid transparent;
+      border-radius: 0 0 8px 8px;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-top: 125px solid var(--env-flap);
+      transform-origin: top;
+      transition: transform 0.5s ease, z-index 0.2s 0.2s;
+      z-index: 5;
+    }
+
+    .seal {
+      position: absolute;
+      top: -30px;
+      left: -18px;
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    /* 열렸을 때 */
+    .envelope-container.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+      transition: transform 0.5s ease, z-index 0.1s 0.2s;
+    }
+
+    .envelope-container.open .letter {
+      opacity: 1;
+      transform: translateY(-240px); /* 넉넉하게 위로 솟아오름 */
+      z-index: 6;
+      pointer-events: auto; /* 편지가 열리면 버튼 클릭 허용 */
+      transition: transform 0.8s cubic-bezier(0.33, 1, 0.68, 1) 0.35s, 
+                  opacity 0.2s ease 0.3s, 
+                  z-index 0s 0.35s;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hint-text" id="hint">봉투를 터치하여 초대장을 열어보세요</div>
+
+  <div class="envelope-container" id="envelope">
+    <!-- 편지지 영역 -->
+    <div class="letter">
+      <!-- 캔바 이미지 파일 -->
+      <img src="https://i.imgur.com/Z3Q0U7R.png" alt="초대장 카드" class="letter-img" />
+
+      <!-- 편지지 하단 버튼들 -->
+      <div class="letter-btn-wrap">
+        <!-- 1. 외부 링크로 이동하는 버튼 -->
+        <a href="https://example.com" target="_blank" class="action-btn">
+          🔗 초대 장소 웹사이트 바로가기
+        </a>
+
+        <!-- 2. 파일 다운로드 버튼 (download 속성 추가) -->
+        <a href="invitation_pass.pdf" download="특별초대권.pdf" class="action-btn secondary">
+          📥 입장 티켓 다운로드
+        </a>
+      </div>
+    </div>
+
+    <div class="envelope-back"></div>
+    <div class="envelope-pocket"></div>
+    <div class="envelope-flap">
+      <div class="seal">✦</div>
+    </div>
+  </div>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const hint = document.getElementById('hint');
+    const buttons = document.querySelectorAll('.action-btn');
+
+    // 1. 버튼 클릭 시 봉투가 다시 닫히지 않도록 이벤트 전파 차단
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    // 2. 봉투 클릭 시 열고 닫기 토글
+    envelope.addEventListener('click', () => {
+      envelope.classList.toggle('open');
+      if (envelope.classList.contains('open')) {
+        hint.textContent = '다시 터치하면 봉투가 닫힙니다';
+      } else {
+        hint.textContent = '봉투를 터치하여 초대장을 열어보세요';
+      }
+    });
+  </script>
+</body>
+</html>
