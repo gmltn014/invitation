@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>특별한 초대장</title>
   
-  <!-- 카카오톡/SNS 공유용 미리보기 -->
   <meta property="og:title" content="청년부 특별 초대장" />
   <meta property="og:description" content="봉투를 터치하여 초대장을 열어보세요!" />
 
@@ -20,9 +19,8 @@
       --btn-bg: #222222;
       --btn-text: #ffffff;
       
-      /* 모바일 화면에 맞춘 너비와 높이 비율 */
       --env-width: min(92vw, 420px);
-      --env-height: calc(var(--env-width) * 0.65); /* 봉투 가로세로 비율 */
+      --env-height: calc(var(--env-width) * 0.65);
     }
 
     * {
@@ -36,15 +34,14 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end; /* 모바일에서 위로 솟구쳐도 잘리지 않도록 하단 배치 */
+      justify-content: flex-end;
       align-items: center;
       background-color: var(--bg-color);
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
       overflow-x: hidden;
-      padding-bottom: max(30px, 5vh);
+      padding-bottom: max(35px, 6vh);
     }
 
-    /* 안내 문구 */
     .hint-text {
       font-size: 1rem;
       font-weight: 500;
@@ -61,7 +58,7 @@
       50% { opacity: 1; }
     }
 
-    /* 전체 봉투 래퍼 (반응형 너비) */
+    /* 봉투 래퍼 */
     .envelope-container {
       position: relative;
       width: var(--env-width);
@@ -79,16 +76,16 @@
       background-color: var(--env-dark);
       border-radius: 12px;
       z-index: 1;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 
-    /* 편지지 영역 (화면에 큼직하게 꽉 차는 비율) */
+    /* 편지지 */
     .letter {
       position: absolute;
       left: 4%;
       top: 3%;
       width: 92%;
-      height: calc(var(--env-width) * 1.35); /* 세로로 길고 꽉 찬 카드 비율 */
+      height: calc(var(--env-width) * 1.35);
       background: var(--letter-bg);
       border-radius: 12px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -102,7 +99,6 @@
       pointer-events: none;
     }
 
-    /* 캔바 이미지 꽉 채우기 */
     .letter-img {
       width: 100%;
       height: 100%;
@@ -110,7 +106,6 @@
       display: block;
     }
 
-    /* 편지지 하단 버튼 그룹 */
     .letter-btn-wrap {
       position: absolute;
       bottom: 16px;
@@ -146,7 +141,7 @@
       transform: scale(0.97);
     }
 
-    /* 봉투 앞면 주머니 (clip-path로 깔끔한 반응형 삼각형 구현) */
+    /* 봉투 앞면 포켓 */
     .envelope-pocket {
       position: absolute;
       bottom: 0;
@@ -160,7 +155,7 @@
       pointer-events: none;
     }
 
-    /* 봉투 덮개 */
+    /* 봉투 덮개 (수정: 상단 모서리 틈새 완벽 차단) */
     .envelope-flap {
       position: absolute;
       top: 0;
@@ -168,6 +163,8 @@
       width: 100%;
       height: 100%;
       background-color: var(--env-flap);
+      /* 상단 좌우 모서리를 뒷판과 정확히 일치시켜 삐져나옴 방지 */
+      border-radius: 12px 12px 0 0;
       clip-path: polygon(0 0, 100% 0, 50% 55%);
       transform-origin: top center;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s 0.2s;
@@ -193,21 +190,16 @@
       font-weight: bold;
     }
 
-    /* =========================================
-       터치 후 열림 상태 (.open)
-    ========================================= */
-
-    /* 1. 덮개가 위로 넘어감 */
+    /* 열림 상태 */
     .envelope-container.open .envelope-flap {
       transform: rotateX(180deg);
+      border-radius: 0; /* 젖혀질 때 자연스럽게 전환 */
       z-index: 1;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s 0.2s;
     }
 
-    /* 2. 편지가 시원하게 솟아오름 */
     .envelope-container.open .letter {
       opacity: 1;
-      /* 화면 크기에 비례해 시원하게 솟아오름 */
       transform: translateY(calc(-1 * var(--env-width) * 0.85));
       z-index: 6;
       pointer-events: auto;
@@ -222,26 +214,19 @@
   <div class="hint-text" id="hint">봉투를 터치하여 초대장을 열어보세요</div>
 
   <div class="envelope-container" id="envelope">
-    <!-- 편지지 영역 -->
     <div class="letter">
-      <!-- 캔바에서 만든 이미지 파일명 또는 이미지 링크 -->
       <img src="https://i.imgur.com/Z3Q0U7R.png" alt="나들이 초대장" class="letter-img" />
 
-      <!-- 하단 버튼들 (필요한 버튼만 남겨두셔도 됩니다) -->
       <div class="letter-btn-wrap">
-        <!-- 1. 참가 신청서 (구글폼 등) -->
         <a href="https://forms.google.com" target="_blank" class="action-btn">
           👉 나들이 참가 신청서 작성하기
         </a>
-
-        <!-- 2. 일정 및 장소 안내 링크 (또는 파일 다운로드) -->
         <a href="https://map.naver.com" target="_blank" class="action-btn secondary">
           📍 나들이 장소 안내 바로가기
         </a>
       </div>
     </div>
 
-    <!-- 봉투 본체 부속들 -->
     <div class="envelope-back"></div>
     <div class="envelope-pocket"></div>
     <div class="envelope-flap">
@@ -254,14 +239,12 @@
     const hint = document.getElementById('hint');
     const buttons = document.querySelectorAll('.action-btn');
 
-    // 버튼 클릭 시에는 봉투가 닫히지 않도록 방지
     buttons.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
       });
     });
 
-    // 봉투 클릭/터치 토글
     envelope.addEventListener('click', () => {
       envelope.classList.toggle('open');
       if (envelope.classList.contains('open')) {
