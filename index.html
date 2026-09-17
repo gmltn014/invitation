@@ -106,15 +106,15 @@
       display: block;
     }
 
+    /* 편지지 하단 버튼 그룹 (단일 버튼) */
     .letter-btn-wrap {
       position: absolute;
       bottom: 16px;
       left: 0;
       width: 100%;
-      padding: 0 14px;
+      padding: 0 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
       z-index: 10;
     }
 
@@ -122,19 +122,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 13px 16px;
+      padding: 14px 18px;
       background-color: var(--btn-bg);
       color: var(--btn-text);
       text-decoration: none;
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border-radius: 8px;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
       letter-spacing: -0.3px;
+      transition: background-color 0.2s, transform 0.1s;
     }
 
-    .action-btn.secondary {
-      background-color: var(--accent);
+    .action-btn:hover {
+      background-color: #333333;
     }
 
     .action-btn:active {
@@ -155,7 +156,7 @@
       pointer-events: none;
     }
 
-    /* 봉투 덮개 (수정: 상단 모서리 틈새 완벽 차단) */
+    /* 봉투 덮개 */
     .envelope-flap {
       position: absolute;
       top: 0;
@@ -163,7 +164,6 @@
       width: 100%;
       height: 100%;
       background-color: var(--env-flap);
-      /* 상단 좌우 모서리를 뒷판과 정확히 일치시켜 삐져나옴 방지 */
       border-radius: 12px 12px 0 0;
       clip-path: polygon(0 0, 100% 0, 50% 55%);
       transform-origin: top center;
@@ -193,7 +193,7 @@
     /* 열림 상태 */
     .envelope-container.open .envelope-flap {
       transform: rotateX(180deg);
-      border-radius: 0; /* 젖혀질 때 자연스럽게 전환 */
+      border-radius: 0;
       z-index: 1;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s 0.2s;
     }
@@ -215,14 +215,13 @@
 
   <div class="envelope-container" id="envelope">
     <div class="letter">
+      <!-- 캔바에서 제작한 이미지 -->
       <img src="https://i.imgur.com/Z3Q0U7R.png" alt="나들이 초대장" class="letter-img" />
 
+      <!-- 지도 바로가기 버튼 1개만 배치 -->
       <div class="letter-btn-wrap">
-        <a href="https://forms.google.com" target="_blank" class="action-btn">
-          👉 나들이 참가 신청서 작성하기
-        </a>
-        <a href="https://map.naver.com" target="_blank" class="action-btn secondary">
-          📍 나들이 장소 안내 바로가기
+        <a href="https://map.naver.com" target="_blank" class="action-btn">
+          📍 나들이 장소 안내 (지도 보기)
         </a>
       </div>
     </div>
@@ -237,14 +236,14 @@
   <script>
     const envelope = document.getElementById('envelope');
     const hint = document.getElementById('hint');
-    const buttons = document.querySelectorAll('.action-btn');
+    const actionBtn = document.querySelector('.action-btn');
 
-    buttons.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
+    // 지도 버튼 클릭 시 봉투가 닫히지 않도록 차단
+    actionBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
     });
 
+    // 봉투 열기/닫기 토글
     envelope.addEventListener('click', () => {
       envelope.classList.toggle('open');
       if (envelope.classList.contains('open')) {
