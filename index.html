@@ -15,15 +15,13 @@
       --env-dark: #b08667;
       --env-flap: #bb9071;
       --letter-bg: #ffffff;
-      
-      /* 인장(실링 왁스) 색상: 원하는 색으로 변경 가능 (예: 버건디 #8e3232, 골드 #bfa15f, 네이비 #2b4162) */
       --accent: #8e3232;
-      
       --btn-bg: #222222;
       --btn-text: #ffffff;
       
-      --env-width: min(92vw, 420px);
-      --env-height: calc(var(--env-width) * 0.65);
+      /* 봉투 기본 크기: 320px (화면이 작을 때만 줄어듦) */
+      --env-width: min(85vw, 320px);
+      --env-height: calc(var(--env-width) * 0.68); /* 약 217px */
     }
 
     * {
@@ -42,11 +40,11 @@
       background-color: var(--bg-color);
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
       overflow-x: hidden;
-      padding-bottom: max(35px, 6vh);
+      padding-bottom: max(40px, 8vh);
     }
 
     .hint-text {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 500;
       color: #777;
       letter-spacing: -0.3px;
@@ -61,13 +59,13 @@
       50% { opacity: 1; }
     }
 
-    /* 봉투 래퍼 */
+    /* 봉투 컨테이너 */
     .envelope-container {
       position: relative;
       width: var(--env-width);
       height: var(--env-height);
       cursor: pointer;
-      perspective: 1200px; /* 3D 회전을 자연스럽게 */
+      perspective: 1200px;
     }
 
     /* 봉투 뒷면 */
@@ -78,21 +76,21 @@
       width: 100%;
       height: 100%;
       background-color: var(--env-dark);
-      border-radius: 12px;
+      border-radius: 10px;
       z-index: 1;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
-    /* 편지지 */
+    /* 편지지 영역 */
     .letter {
       position: absolute;
       left: 4%;
       top: 3%;
       width: 92%;
-      height: calc(var(--env-width) * 1.35);
+      height: calc(var(--env-width) * 1.3); /* 세로 카드 비율 */
       background: var(--letter-bg);
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
       overflow: hidden;
       z-index: 2;
       opacity: 0;
@@ -103,20 +101,21 @@
       pointer-events: none;
     }
 
+    .letter img,
     .letter-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block !important;
     }
 
-    /* 편지지 하단 지도 버튼 */
+    /* 지도 바로가기 버튼 */
     .letter-btn-wrap {
       position: absolute;
-      bottom: 16px;
+      bottom: 14px;
       left: 0;
       width: 100%;
-      padding: 0 16px;
+      padding: 0 14px;
       display: flex;
       flex-direction: column;
       z-index: 10;
@@ -126,14 +125,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 14px 18px;
+      padding: 12px 14px;
       background-color: var(--btn-bg);
       color: var(--btn-text);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      border-radius: 8px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
       letter-spacing: -0.3px;
       transition: background-color 0.2s, transform 0.1s;
     }
@@ -142,7 +141,7 @@
       transform: scale(0.97);
     }
 
-    /* 봉투 앞면 포켓 */
+    /* 봉투 앞면 주머니 */
     .envelope-pocket {
       position: absolute;
       bottom: 0;
@@ -151,12 +150,12 @@
       height: 100%;
       background-color: var(--env-base);
       clip-path: polygon(0 100%, 100% 100%, 100% 45%, 50% 15%, 0 45%);
-      border-radius: 0 0 12px 12px;
+      border-radius: 0 0 10px 10px;
       z-index: 4;
       pointer-events: none;
     }
 
-    /* 봉투 덮개 (떨어짐 방지 정밀 보정) */
+    /* 봉투 덮개 */
     .envelope-flap {
       position: absolute;
       top: 0;
@@ -168,52 +167,46 @@
       transform-origin: top center;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s 0.2s;
       z-index: 5;
-      border-radius: 12px 12px 0 0;
+      border-radius: 10px 10px 0 0;
     }
 
-    /* 실링 왁스 인장 디자인 */
+    /* 인장 */
     .seal {
       position: absolute;
       top: 38%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 46px;
-      height: 46px;
+      width: 40px;
+      height: 40px;
       background: var(--accent);
       border-radius: 50%;
-      /* 왁스 질감 느낌의 입체 그림자 */
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.28), inset 0 0 0 2px rgba(255, 255, 255, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: bold;
       user-select: none;
       transition: opacity 0.3s ease;
     }
 
-    /* =========================================
-       열림 상태 (.open)
-    ========================================= */
-
-    /* 덮개가 완벽히 붙어서 180도 넘어감 */
+    /* --- 열림 상태 --- */
     .envelope-container.open .envelope-flap {
       transform: rotateX(180deg);
-      z-index: 1; /* 뒤판 바로 뒤로 정돈 */
+      z-index: 1;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s 0.2s;
     }
 
-    /* 열렸을 때 인장이 뒤집혀 거슬리지 않도록 자연스럽게 페이드아웃 */
     .envelope-container.open .seal {
       opacity: 0;
       transition: opacity 0.2s ease;
     }
 
-    /* 편지지가 솟아오름 */
     .envelope-container.open .letter {
       opacity: 1;
-      transform: translateY(calc(-1 * var(--env-width) * 0.85));
+      /* 편지가 올라오는 거리 */
+      transform: translateY(calc(-1 * var(--env-width) * 0.8));
       z-index: 6;
       pointer-events: auto;
       transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.35s, 
@@ -223,6 +216,7 @@
   </style>
 </head>
 <body>
+  
   <div class="hint-text" id="hint">봉투를 터치하여 초대장을 열어보세요</div>
 
   <div class="envelope-container" id="envelope">
@@ -238,21 +232,10 @@
       </div>
     </div>
 
+    <!-- 봉투 부속 -->
     <div class="envelope-back"></div>
     <div class="envelope-pocket"></div>
     <div class="envelope-flap">
-      <div class="seal">✦</div>
-    </div>
-  </div>
-
-  <!-- 봉투 본체 -->
-    <div class="envelope-back"></div>
-    <div class="envelope-pocket"></div>
-    <div class="envelope-flap">
-      <!-- 
-        [인장 커스텀 위치]
-        원하는 텍스트(예: ✞, YSM, 예수마을)나 기호, 이모지를 아래 태그 사이에 넣어주세요.
-      -->
       <div class="seal">✞</div>
     </div>
   </div>
@@ -262,9 +245,11 @@
     const hint = document.getElementById('hint');
     const actionBtn = document.querySelector('.action-btn');
 
-    actionBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+    if (actionBtn) {
+      actionBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
 
     envelope.addEventListener('click', () => {
       envelope.classList.toggle('open');
